@@ -87,10 +87,13 @@ public class Main {
 									System.out.println("************************************************************");
 									System.out.println("Venda de código: " + venda.getCodigo() + " no CPF "
 											+ venda.getCliente().getCpf() + ": ");
+
 									venda.getItens().stream().forEach(x -> {
-										System.out.println(x.getId() + " - " + x.getNome() + "    R$" + x.getPreco()
-												+ "    Comissão: R$" + formatarNumero(venda.getComissaoVenda()));
+										Double comissaoProduto = x.getPreco() * venda.getEmpresa().getTaxa();
+										System.out.println(x.getId() + " - " + x.getNome() + "    R$" + x.getPreco() +
+												"    Comissão: R$" + formatarNumero(comissaoProduto));
 									});
+
 									System.out.println("Total Venda: R$" + venda.getValor());
 									System.out.println(
 											"Total Taxa a ser paga: R$" + formatarNumero(venda.getComissaoSistema()));
@@ -214,11 +217,6 @@ public class Main {
 
 		Double comissaoVenda = 0.0; // Variável para armazenar a comissão de venda total
 
-		for (Produto produto : carrinho) {
-			Double comissaoProduto = produto.getPreco() * empresa.getTaxa();
-			comissaoVenda += comissaoProduto;
-		}
-
 		Venda venda = new Venda(idVenda, carrinho.stream().toList(), total, comissaoSistema, comissaoVenda, empresa,
 				cliente);
 		empresa.setSaldo(empresa.getSaldo() + total);
@@ -226,10 +224,9 @@ public class Main {
 		return venda;
 	}
 
-	// Método auxiliar para formatar o número com duas casas decimais
 	public static String formatarNumero(double numero) {
-		DecimalFormat df = new DecimalFormat("#.00");
-		return df.format(numero);
+		DecimalFormat df = new DecimalFormat("0.00");
+		return "R$" + df.format(numero);
 	}
 
 }
